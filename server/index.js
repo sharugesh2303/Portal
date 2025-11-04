@@ -19,7 +19,7 @@ const port = process.env.PORT || 8000;
 // =======================================================
 const allowedOrigins = [
     'https://portal-git-main-shanugeth2303s-projects.vercel.app', 
-    'https://portal-one-mocha.vercel.app', 
+    'https://jjcetcollegeportal.vercel.app/', 
     'https://portal-lxfd.onrender.com' 
 ];
 
