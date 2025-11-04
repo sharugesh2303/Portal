@@ -13,26 +13,21 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 
+// --- Middlewares ---
 // =======================================================
-// --- CRITICAL CORS CONFIGURATION (Final Update) ---
+// --- CRITICAL CORS CONFIGURATION (Updated and Secure) ---
 // =======================================================
-// Define ALL domains allowed to request resources from this server.
 const allowedOrigins = [
-    // 1. Vercel deployment URL shown in the Render error log:
-    'https://portal-git-main-sharugeth2303s-projects.vercel.app', 
-    // 2. Vercel primary alias URL you provided:
+    'https://portal-git-main-shanugeth2303s-projects.vercel.app', 
     'https://portal-one-mocha.vercel.app', 
-    // 3. Your Render Backend URL:
     'https://portal-lxfd.onrender.com' 
 ];
 
 const corsOptions = {
     origin: (origin, callback) => {
-        // Allow requests if they come from an allowed origin (or if they have no origin, which is safe for server-side/Postman calls)
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            // Block the request
             callback(new Error('Not allowed by CORS policy. Origin rejected.'), false);
         }
     },
@@ -44,13 +39,20 @@ const corsOptions = {
 app.use(cors(corsOptions));
 // =======================================================
 
-
 // This allows the server to accept and parse JSON in request bodies
 app.use(express.json());
 
 // --- API Routes ---
+// It tells the server that any URL starting with /api/auth
+// should be handled by the 'authRoutes' file.
 app.use('/api/auth', authRoutes);
+
+// Any URL starting with /api/faculty
+// should be handled by the 'facultyRoutes' file.
 app.use('/api/faculty', facultyRoutes);
+
+// Any URL starting with /api/salary
+// should be handled by the 'salaryRoutes' file.
 app.use('/api/salary', salaryRoutes);
 
 // --- Database Connection ---
@@ -60,7 +62,7 @@ mongoose.connect(process.env.MONGO_URI)
   })
   .catch((error) => {
     console.error("❌ MongoDB connection error:", error);
-    process.exit(1);
+    process.exit(1); // Exit the process if DB connection fails
   });
 
 // --- Basic Routes ---
