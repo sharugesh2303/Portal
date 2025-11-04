@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
+// --- API Base URL ---
+const API_BASE_URL = 'https://portal-lxfd.onrender.com/api'; // *** UPDATED API URL ***
+// --------------------
+
 // (Using the same styles as AddFacultyPage)
 const styles = {
   container: { padding: '20px', fontFamily: 'Arial, sans-serif' },
@@ -21,13 +25,13 @@ const styles = {
 
 function EditFacultyPage() {
   const [formData, setFormData] = useState({ 
-    username: '', 
-    password: '', 
-    name: '',
-    department: '',    
-    designation: '',   
-    baseSalary: 0      
-  });
+    username: '', 
+    password: '', 
+    name: '',
+    department: '',    
+    designation: '',   
+    baseSalary: 0      
+  });
   const [message, setMessage] = useState({ type: '', content: '' });
   const navigate = useNavigate();
   const { id } = useParams(); 
@@ -36,7 +40,8 @@ function EditFacultyPage() {
   useEffect(() => {
     const fetchFacultyData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/faculty/${id}`);
+        // *** UPDATED API CALL 1 (GET) ***
+        const response = await axios.get(`${API_BASE_URL}/faculty/${id}`);
         // Destructure all six fields from the response data
         const { name, username, password, department, designation, baseSalary } = response.data;
         
@@ -53,6 +58,9 @@ function EditFacultyPage() {
         setMessage({ type: 'error', content: 'Could not load faculty data.' });
       }
     };
+    // NOTE: This fetch needs a token in the headers for authentication.
+    // Ensure the backend route is not protected or you add a token to this request's headers. 
+    // For a real application, you'd add: { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
     fetchFacultyData();
   }, [id]); 
 
@@ -70,13 +78,22 @@ function EditFacultyPage() {
     e.preventDefault();
     setMessage({ type: '', content: '' });
 
+    // NOTE: The token needs to be included in the header for this protected route (Admin function)
+    const token = localStorage.getItem('token'); 
+    if (!token) {
+      setMessage({ type: 'error', content: 'Authentication failed. Please log in as Admin.' });
+      return;
+    }
+
     try {
-      await axios.put(`http://localhost:8000/api/faculty/${id}`, formData);
+      // *** UPDATED API CALL 2 (PUT) ***
+      await axios.put(`${API_BASE_URL}/faculty/${id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
       setMessage({ type: 'success', content: 'Faculty updated successfully! Redirecting...' });
       
       // A slight delay before navigation ensures the success message is seen.
-      // When the AdminDashboard re-renders, its useEffect hook will run
-      // and call fetchFaculty, fetching the latest data.
       setTimeout(() => {
         navigate('/admin/dashboard');
       }, 1500);
