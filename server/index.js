@@ -13,46 +13,47 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 
-// --- Middlewares ---
 // =======================================================
-// --- CRITICAL CORS CONFIGURATION (Updated and Secure) ---
+// --- CRITICAL CORS CONFIGURATION (Final and Secure) ---
 // =======================================================
+// Define ALL domains allowed to request resources from this server.
 const allowedOrigins = [
-    'https://portal-git-main-shanugeth2303s-projects.vercel.app', 
+    // 1. New, Definitive Vercel Alias:
     'https://jjcetcollegeportal.vercel.app', 
-    'https://portal-lxfd.onrender.com' 
+    
+    // 2. Previous Aliases (Kept for safety/testing domains):
+    'https://portal-one-mocha.vercel.app', 
+    'https://portal-git-main-sharugeth2303s-projects.vercel.app',
+    
+    // 3. Your Render Backend Domain (The host of this API):
+    'https://portal-jjd.onrender.com' 
 ];
 
 const corsOptions = {
     origin: (origin, callback) => {
+        // Allow requests if they come from an allowed origin (or if they have no origin, e.g., Postman)
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
+            // Block the request
             callback(new Error('Not allowed by CORS policy. Origin rejected.'), false);
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+    credentials: true // Crucial for sending authentication tokens/headers
 };
 
 // Apply the configured CORS middleware
 app.use(cors(corsOptions));
 // =======================================================
 
+
 // This allows the server to accept and parse JSON in request bodies
 app.use(express.json());
 
 // --- API Routes ---
-// It tells the server that any URL starting with /api/auth
-// should be handled by the 'authRoutes' file.
 app.use('/api/auth', authRoutes);
-
-// Any URL starting with /api/faculty
-// should be handled by the 'facultyRoutes' file.
 app.use('/api/faculty', facultyRoutes);
-
-// Any URL starting with /api/salary
-// should be handled by the 'salaryRoutes' file.
 app.use('/api/salary', salaryRoutes);
 
 // --- Database Connection ---
@@ -62,7 +63,7 @@ mongoose.connect(process.env.MONGO_URI)
   })
   .catch((error) => {
     console.error("❌ MongoDB connection error:", error);
-    process.exit(1); // Exit the process if DB connection fails
+    process.exit(1);
   });
 
 // --- Basic Routes ---
