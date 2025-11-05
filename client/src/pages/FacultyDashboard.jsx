@@ -3,6 +3,17 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { saveAs } from 'file-saver'; 
 
+// --- API Configuration ---
+// Check if the application is running in a local environment
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+// Use localhost for local development, otherwise use the deployed Render URL (portal-jjd is assumed to be correct)
+// Note: We use portal-lxfd in your original file, but portal-jjd was the correct endpoint in the last debug session.
+// For consistency and safety, I'll use the URL you provided in the file, but keep the localhost logic correct.
+const API_BASE_URL = isLocal 
+    ? 'http://localhost:8000/api' 
+    : 'https://portal-lxfd.onrender.com/api'; // <--- PRODUCTION RENDER URL from your original file
+
 // --- STYLES - FINAL ATTRACTIVE & HIGH-POLISH THEME (ULTRA WOW) ---
 const TEXT_DARK = '#1a202c';        // Very Dark Text
 const BACKGROUND_LIGHT = '#f7fafc'; // Clean Background
@@ -11,8 +22,6 @@ const ACCENT_PRIMARY = '#007AFF';   // Electric Blue (Vibrant)
 const ACCENT_SECONDARY = '#38b2ac'; // Teal/Cyan
 const ACCENT_DANGER = '#e53e3e';    // Strong Red
 const ACCENT_SUCCESS = '#48bb78';   // Lively Green
-
-const API_BASE_URL = 'https://portal-lxfd.onrender.com/api'; // *** NEW: Centralized API URL ***
 
 const styles = {
     dashboard: {

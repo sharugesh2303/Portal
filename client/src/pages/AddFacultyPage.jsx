@@ -2,8 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
-// --- API Base URL ---
-const API_BASE_URL = 'https://portal-lxfd.onrender.com/api'; // *** CORRECTED API BASE URL ***
+// --- API Configuration ---
+// Check if the application is running in a local environment
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+// Use localhost for local development, otherwise use the deployed Render URL
+// NOTE: Using the portal-lxfd URL provided in your original code, ensure this matches your live Render endpoint.
+const API_BASE_URL = isLocal 
+    ? 'http://localhost:8000/api'
+    : 'https://portal-lxfd.onrender.com/api'; // <--- PRODUCTION RENDER URL
 // --------------------
 
 // --- STYLES - FINAL DARK MODE (CATCHY & HIGH-CONTRAST) ---

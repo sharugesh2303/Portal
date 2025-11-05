@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+// --- API Configuration ---
+// Check if the application is running in a local environment (for easy local development)
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+// Use localhost for local development, otherwise use the deployed Render URL
+const API_BASE_URL = isLocal 
+    ? 'http://localhost:8000/api'
+    : 'https://portal-lxfd.onrender.com/api'; // <--- PRODUCTION RENDER URL
+
 // --- STYLES ---
 const loginStyles = {
     // Styles for the whole page/background
@@ -126,12 +135,12 @@ function LoginPage() {
         setMessage('');
 
         try {
-            // *** TARGET LINE UPDATED HERE ***
-            const response = await axios.post('https://portal-lxfd.onrender.com/api/auth/login', {
+            // Using the conditional API_BASE_URL
+            const response = await axios.post(`${API_BASE_URL}/auth/login`, {
                 username: username,
                 password: password,
             });
-            // **********************************
+            
 
             localStorage.setItem('token', response.data.token); 
             console.log('Login successful:', response.data);
@@ -150,7 +159,8 @@ function LoginPage() {
             if (error.response) {
                 setMessage(`Error: ${error.response.data.message}`); 
             } else {
-                setMessage('Error: Could not connect to server.');
+                // Show a more specific message if it's a network error during local development
+                setMessage(`Error: Could not connect to server. Check if the backend is running on ${API_BASE_URL.replace('/api', '')}.`);
             }
         }
     };

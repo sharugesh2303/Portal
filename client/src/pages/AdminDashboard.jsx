@@ -3,21 +3,35 @@ import axios from 'axios';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { saveAs } from 'file-saver';
 
-// --- API Base URL ---
-const API_BASE_URL = 'https://portal-lxfd.onrender.com/api'; 
-// --------------------
+// --- API Configuration (New Dynamic Logic) ---
+// Check if the application is running in a local environment
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+// Use localhost for local development, otherwise use the deployed Render URL
+// NOTE: Using the portal-lxfd URL provided in your original file.
+const API_BASE_URL = isLocal 
+    ? 'http://localhost:8000/api'
+    : 'https://portal-lxfd.onrender.com/api'; 
+// ---------------------------------------------
 
 // -------------------------------------------------------------------
 // 🎨 UPDATED STYLES FOR A MODERN, ATTRACTIVE DASHBOARD (WOW FACTOR)
 // -------------------------------------------------------------------
+const TEXT_DARK = '#1a202c';        // Very Dark Text
+const BACKGROUND_LIGHT = '#f7fafc'; // Clean Background
+const CARD_WHITE = '#FFFFFF';       
+const ACCENT_PRIMARY = '#007AFF';   // Electric Blue (Vibrant)
+const ACCENT_SECONDARY = '#38b2ac'; // Teal/Cyan
+const ACCENT_DANGER = '#e53e3e';    // Strong Red
+const ACCENT_SUCCESS = '#48bb78';   // Lively Green
+
 const styles = {
-    // General Layout
     dashboard: {
         maxWidth: '1100px', // Wider layout
         margin: '40px auto',
         padding: '30px',
         fontFamily: 'Roboto, sans-serif', // Modern font
-        color: '#2c3e50', // Darker text for better contrast
+        color: TEXT_DARK, // Darker text for better contrast
     },
     header: {
         display: 'flex',

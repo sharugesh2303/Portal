@@ -2,9 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
-// --- API Base URL ---
-const API_BASE_URL = 'https://portal-lxfd.onrender.com/api'; // *** UPDATED API URL ***
-// --------------------
+// --- API Configuration ---
+// Check if the application is running in a local environment
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+// Use localhost for local development, otherwise use the deployed Render URL
+const API_BASE_URL = isLocal 
+    ? 'http://localhost:8000/api'
+    : 'https://portal-lxfd.onrender.com/api'; // <--- PRODUCTION RENDER URL
 
 // (Using the same styles as AddFacultyPage)
 const styles = {
@@ -40,7 +45,7 @@ function EditFacultyPage() {
   useEffect(() => {
     const fetchFacultyData = async () => {
       try {
-        // *** UPDATED API CALL 1 (GET) ***
+        // Using the conditional API_BASE_URL
         const response = await axios.get(`${API_BASE_URL}/faculty/${id}`);
         // Destructure all six fields from the response data
         const { name, username, password, department, designation, baseSalary } = response.data;
@@ -58,9 +63,8 @@ function EditFacultyPage() {
         setMessage({ type: 'error', content: 'Could not load faculty data.' });
       }
     };
-    // NOTE: This fetch needs a token in the headers for authentication.
-    // Ensure the backend route is not protected or you add a token to this request's headers. 
-    // For a real application, you'd add: { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+    // NOTE: This route should typically require an Admin token. I am adding a note here 
+    // to reinforce best practices, though the original code did not require it for the GET.
     fetchFacultyData();
   }, [id]); 
 
@@ -86,10 +90,10 @@ function EditFacultyPage() {
     }
 
     try {
-      // *** UPDATED API CALL 2 (PUT) ***
+      // Using the conditional API_BASE_URL
       await axios.put(`${API_BASE_URL}/faculty/${id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
       setMessage({ type: 'success', content: 'Faculty updated successfully! Redirecting...' });
       
